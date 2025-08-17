@@ -1,4 +1,4 @@
-package com.example.difme.service;
+package com.example.difme.service.User;
 
 import com.example.difme.dto.User.ChangePasswordRequestDto;
 import com.example.difme.dto.User.ChangePasswordResponseDto;

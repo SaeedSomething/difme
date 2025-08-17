@@ -6,8 +6,18 @@ import com.example.difme.dto.User.UserCreationRequestDto;
 import com.example.difme.dto.User.UserLoginDto;
 import com.example.difme.dto.User.UserLoginResponseDto;
 import com.example.difme.dto.User.UserResponseDto;
+import com.example.difme.dto.employer.EmployerCreateRequestDto;
+import com.example.difme.dto.employer.EmployerResponseDto;
+import com.example.difme.dto.factory.EmployerDtoFactory;
+import com.example.difme.dto.factory.FreelancerDtoFactory;
+import com.example.difme.dto.freelancer.FreelancerCreateRequestDto;
+import com.example.difme.dto.freelancer.FreelancerResponseDto;
+import com.example.difme.model.EmployerModel;
+import com.example.difme.model.FreelancerModel;
 import com.example.difme.model.UserModel;
-import com.example.difme.service.UserService;
+import com.example.difme.service.Employer.EmployerService;
+import com.example.difme.service.Freelancer.FreelancerService;
+import com.example.difme.service.User.UserService;
 import com.example.difme.service.auth.AuthService;
 import com.example.difme.service.auth.AuthenticationContext;
 import org.springframework.http.HttpStatus;
@@ -20,7 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.difme.dto.MyApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,6 +49,10 @@ public class AuthController {
         private final UserService userService;
         private final AuthService authService;
         private final AuthenticationContext authenticationContext;
+        private final EmployerDtoFactory employerDtoFactory;
+        private final EmployerService employerService;
+        private final FreelancerDtoFactory freelancerDtoFactory;
+        private final FreelancerService freelancerService;
 
         @Operation(summary = "Create a new user", description = "Creates a new user and returns the created user details")
         @ApiResponses({
@@ -46,6 +60,7 @@ public class AuthController {
                         @ApiResponse(responseCode = "400", description = "Invalid input data")
         })
         @PostMapping("/signup")
+        @Deprecated
         public ResponseEntity<UserResponseDto> createUser(
                         @Parameter(description = "User data to create", required = true) @RequestBody UserCreationRequestDto reqDto) {
                 UserResponseDto respDto = userService.createUser(reqDto);
@@ -79,15 +94,41 @@ public class AuthController {
         })
         @SecurityRequirement(name = "bearerAuth")
         @PutMapping("/change-password")
-        public ResponseEntity<com.example.difme.dto.ApiResponse<ChangePasswordResponseDto>> changePassword(
+        public ResponseEntity<MyApiResponse<ChangePasswordResponseDto>> changePassword(
                         @Parameter(description = "Password change request") @Valid @RequestBody ChangePasswordRequestDto request) {
 
                 Long userId = authenticationContext.getCurrentUserId();
 
                 ChangePasswordResponseDto response = userService.changePassword(userId, request);
 
-                return ResponseEntity.ok(com.example.difme.dto.ApiResponse.success(
+                return ResponseEntity.ok(MyApiResponse.success(
                                 response,
                                 "Password changed successfully"));
+        }
+
+        @PostMapping("/employers")
+        @Operation(summary = "Sign up as employer", description = "Register a new employer in the system")
+        @ApiResponse(responseCode = "201", description = "Employer created successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
+        @ApiResponse(responseCode = "400", description = "Invalid employer data")
+        public ResponseEntity<MyApiResponse<EmployerResponseDto>> signUpAsEmployer(
+                        @Parameter(description = "Employer details") @Valid @RequestBody EmployerCreateRequestDto employerDto) {
+                EmployerModel employer = employerDtoFactory.toModel(employerDto);
+                EmployerModel createdEmployer = employerService.createEmployer(employer);
+                EmployerResponseDto responseDto = employerDtoFactory.toResponseDto(createdEmployer);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(MyApiResponse.success(responseDto, "Employer created successfully"));
+        }
+
+        @PostMapping("/freelancers")
+        @Operation(summary = "Sign up as freelancer", description = "Register a new freelancer in the system")
+        @ApiResponse(responseCode = "201", description = "Freelancer created successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
+        @ApiResponse(responseCode = "400", description = "Invalid freelancer data")
+        public ResponseEntity<MyApiResponse<FreelancerResponseDto>> createFreelancer(
+                        @Parameter(description = "Freelancer details") @Valid @RequestBody FreelancerCreateRequestDto freelancerDto) {
+                FreelancerModel freelancer = freelancerDtoFactory.toModel(freelancerDto);
+                FreelancerModel createdFreelancer = freelancerService.createFreelancer(freelancer);
+                FreelancerResponseDto responseDto = freelancerDtoFactory.toResponseDto(createdFreelancer);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(MyApiResponse.success(responseDto, "Freelancer created successfully"));
         }
 }

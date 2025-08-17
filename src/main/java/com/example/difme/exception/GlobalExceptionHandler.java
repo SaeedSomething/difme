@@ -1,6 +1,6 @@
 package com.example.difme.exception;
 
-import com.example.difme.dto.ApiResponse;
+import com.example.difme.dto.MyApiResponse;
 import org.springframework.beans.factory.annotation.Value;
 // Remove this unused import
 // import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ public class GlobalExceptionHandler {
     private String profile;
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiResponse<Object>> handleApiException(ApiException ex, WebRequest request) {
+    public ResponseEntity<MyApiResponse<Object>> handleApiException(ApiException ex, WebRequest request) {
         log.warn("API Exception: {}", ex.getMessage());
 
-        ApiResponse<Object> response = ApiResponse.error(
+        MyApiResponse<Object> response = MyApiResponse.error(
                 ex.getMessage(),
                 "API_ERROR",
                 ex.getStatus());
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(
+    public ResponseEntity<MyApiResponse<Object>> handleValidationExceptions(
             MethodArgumentNotValidException ex, WebRequest request) {
 
         Map<String, String> errors = new HashMap<>();
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        ApiResponse<Object> response = ApiResponse.error(
+        MyApiResponse<Object> response = MyApiResponse.error(
                 "Validation failed",
                 "VALIDATION_ERROR",
                 400);
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleOtherExceptions(Exception ex, WebRequest request) {
+    public ResponseEntity<MyApiResponse<Object>> handleOtherExceptions(Exception ex, WebRequest request) {
         String message = "An unexpected error occurred";
         if (!profile.equals("prod")) {
             log.error("Unexpected error occurred", ex);
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
             }
         }
 
-        ApiResponse<Object> response = ApiResponse.error(
+        MyApiResponse<Object> response = MyApiResponse.error(
                 message,
                 "INTERNAL_ERROR",
                 500);
@@ -86,12 +86,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiResponse<Object>> handleBadCredentials(
+    public ResponseEntity<MyApiResponse<Object>> handleBadCredentials(
             BadCredentialsException ex, WebRequest request) {
         log.warn("Authentication failed: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error(
+                .body(MyApiResponse.error(
                         ex.getMessage(),
                         "AUTHENTICATION_FAILED",
                         HttpStatus.UNAUTHORIZED.value()));

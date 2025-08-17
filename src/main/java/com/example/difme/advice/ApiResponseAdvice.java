@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.example.difme.annotation.ApiResponseWrapper;
-import com.example.difme.dto.ApiResponse;
+import com.example.difme.dto.MyApiResponse;
+
+import io.swagger.v3.oas.models.responses.ApiResponse;
 
 @ControllerAdvice
 public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
@@ -27,7 +29,7 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
                 packageName.startsWith("org.springdoc");
 
         // Don't wrap if response is already ApiResponse
-        boolean isAlreadyWrapped = ApiResponse.class.isAssignableFrom(returnType.getParameterType());
+        boolean isAlreadyWrapped = MyApiResponse.class.isAssignableFrom(returnType.getParameterType());
 
         return hasAnnotation && !isInternalEndpoint && !isAlreadyWrapped;
     }
@@ -50,7 +52,7 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
         }
 
         // Create success response
-        ApiResponse<Object> apiResponse = ApiResponse.success(body);
+        MyApiResponse<Object> apiResponse = MyApiResponse.success(body);
         apiResponse.setPath(path);
 
         return apiResponse;

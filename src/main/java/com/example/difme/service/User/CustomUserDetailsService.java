@@ -1,4 +1,4 @@
-package com.example.difme.service;
+package com.example.difme.service.User;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

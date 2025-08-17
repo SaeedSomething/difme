@@ -11,12 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import com.example.difme.dto.User.UserCreationRequestDto;
 import com.example.difme.dto.User.UserLoginDto;
 import com.example.difme.dto.User.UserLoginResponseDto;
 import com.example.difme.dto.User.UserResponseDto;
-import com.example.difme.service.UserService;
+import com.example.difme.service.User.UserService;
 import com.example.difme.service.auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

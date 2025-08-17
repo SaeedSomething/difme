@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Standard API response wrapper")
-public class ApiResponse<T> {
+public class MyApiResponse<T> {
 
     @Schema(description = "Indicates if the request was successful", example = "true")
     private boolean success;
@@ -36,8 +36,8 @@ public class ApiResponse<T> {
     private String path;
 
     // Success response factory methods
-    public static <T> ApiResponse<T> success(T data) {
-        return ApiResponse.<T>builder()
+    public static <T> MyApiResponse<T> success(T data) {
+        return MyApiResponse.<T>builder()
                 .success(true)
                 .message("Operation completed successfully")
                 .data(data)
@@ -45,8 +45,8 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<T> success(T data, String message) {
-        return ApiResponse.<T>builder()
+    public static <T> MyApiResponse<T> success(T data, String message) {
+        return MyApiResponse.<T>builder()
                 .success(true)
                 .message(message)
                 .data(data)
@@ -54,8 +54,8 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<T> success(String message) {
-        return ApiResponse.<T>builder()
+    public static <T> MyApiResponse<T> success(String message) {
+        return MyApiResponse.<T>builder()
                 .success(true)
                 .message(message)
                 .timestamp(LocalDateTime.now())
@@ -63,8 +63,8 @@ public class ApiResponse<T> {
     }
 
     // Error response factory methods
-    public static <T> ApiResponse<T> error(String message, ErrorDetails error) {
-        return ApiResponse.<T>builder()
+    public static <T> MyApiResponse<T> error(String message, ErrorDetails error) {
+        return MyApiResponse.<T>builder()
                 .success(false)
                 .message(message)
                 .error(error)
@@ -72,8 +72,8 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<T> error(String message, String errorCode, int statusCode) {
-        return ApiResponse.<T>builder()
+    public static <T> MyApiResponse<T> error(String message, String errorCode, int statusCode) {
+        return MyApiResponse.<T>builder()
                 .success(false)
                 .message(message)
                 .error(ErrorDetails.builder()
