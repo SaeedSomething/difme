@@ -3,7 +3,6 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 ### STS ###
 .apt_generated
 .classpath
@@ -32,3 +31,5 @@ build/
 ### VS Code ###
 .vscode/
 /bootcamp_final_project_phase1.md
+/DTO_FACTORY_IMPLEMENTATION.md
+/DTO_REFACTORING_COMPLETE.md
