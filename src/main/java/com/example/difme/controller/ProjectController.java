@@ -52,12 +52,12 @@ public class ProjectController {
 
     private final AuthenticationContext authenticationContext;
 
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Create new project", description = "Create a new project posting")
     @ApiResponse(responseCode = "201", description = "Project created successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
     @ApiResponse(responseCode = "400", description = "Invalid project data")
     @ApiResponse(responseCode = "403", description = "Only employers can create projects")
+    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN')")
     public ResponseEntity<MyApiResponse<ProjectResponseDto>> createProject(
             @Parameter(description = "Project details") @Valid @RequestBody ProjectCreateRequestDto projectDto) {
         EmployerModel employer = employerService.getEmployerById(authenticationContext.getCurrentUserId())

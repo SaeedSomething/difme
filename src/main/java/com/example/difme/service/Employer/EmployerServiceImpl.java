@@ -19,7 +19,7 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public EmployerModel createEmployer(EmployerModel employer) {
-        
+
         return employerRepository.save(employer);
     }
 

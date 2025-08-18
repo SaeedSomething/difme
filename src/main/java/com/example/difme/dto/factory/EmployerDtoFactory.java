@@ -87,6 +87,9 @@ public class EmployerDtoFactory {
         if (dto.getPhoneNumber() != null) {
             model.setPhoneNumber(dto.getPhoneNumber());
         }
+        if (dto.getEmail() != null) {
+            model.setEmail(dto.getEmail());
+        }
         if (dto.getCompanyDescription() != null) {
             model.setCompanyDescription(dto.getCompanyDescription());
         }

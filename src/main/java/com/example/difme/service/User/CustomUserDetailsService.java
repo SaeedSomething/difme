@@ -8,7 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.difme.model.EmployerModel;
+import com.example.difme.model.FreelancerModel;
 import com.example.difme.model.UserModel;
+import com.example.difme.model.enums.Role;
 import com.example.difme.repository.UserRepository;
 
 import java.util.Collections;
@@ -23,11 +26,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserModel user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
+        Role role = user.getRole();
+        if (user instanceof FreelancerModel) {
+            role = Role.FREELANCER;
+        } else if (user instanceof EmployerModel) {
+            role = Role.EMPLOYER;
+        }
         return User.builder()
                 .username(user.getUserName())
                 .password(user.getPasswordHash())
-                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())))
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name())))
                 .accountExpired(user.getAccountExpired())
                 .accountLocked(user.getAccountLocked() || user.isAccountLocked())
                 .credentialsExpired(user.getCredentialsExpired())
