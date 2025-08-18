@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(existingProject);
     }
 
-    @PreAuthorize("#existingProject.employer.id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#existingProject.employer.id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @Override
     public ProjectModel updateProjectDescription(Long id, String description) {
         ProjectModel existingProject = projectRepository.findById(id)

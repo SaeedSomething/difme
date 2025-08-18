@@ -35,3 +35,4 @@ public class EmployerResponseDto {
     private String companyDescription;
 
 }
+

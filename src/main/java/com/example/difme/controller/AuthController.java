@@ -5,12 +5,15 @@ import com.example.difme.dto.User.ChangePasswordResponseDto;
 import com.example.difme.dto.User.UserCreationRequestDto;
 import com.example.difme.dto.User.UserLoginDto;
 import com.example.difme.dto.User.UserLoginResponseDto;
+import com.example.difme.dto.User.UserProfileDto;
 import com.example.difme.dto.User.UserResponseDto;
 import com.example.difme.dto.employer.EmployerCreateRequestDto;
+import com.example.difme.dto.employer.EmployerProfileDto;
 import com.example.difme.dto.employer.EmployerResponseDto;
 import com.example.difme.dto.factory.EmployerDtoFactory;
 import com.example.difme.dto.factory.FreelancerDtoFactory;
 import com.example.difme.dto.freelancer.FreelancerCreateRequestDto;
+import com.example.difme.dto.freelancer.FreelancerProfileDto;
 import com.example.difme.dto.freelancer.FreelancerResponseDto;
 import com.example.difme.model.EmployerModel;
 import com.example.difme.model.FreelancerModel;
@@ -83,6 +86,43 @@ public class AuthController {
                 }
                 return ResponseEntity.ok(user);// ! dev only , didnt want ot inject dto factory and model should not be
                                                // sent to user
+        }
+
+        @Operation(summary = "Get user profile", description = "Get the current user's profile information. Returns different profile data based on user type (Freelancer or Employer).")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Profile retrieved successfully", content = @Content(schema = @Schema(oneOf = {
+                                        FreelancerProfileDto.class, EmployerProfileDto.class, UserProfileDto.class }))),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or expired token"),
+                        @ApiResponse(responseCode = "404", description = "User not found")
+        })
+        @SecurityRequirement(name = "bearerAuth")
+        @GetMapping("/profile")
+        public ResponseEntity<MyApiResponse<UserProfileDto>> getUserProfile() {
+                UserModel user = authenticationContext.getCurrentUser();
+                if (user == null) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                        .body(MyApiResponse.error("User not found", null));
+                }
+
+                UserProfileDto profileDto;
+                String message;
+
+                // Check user type and create appropriate profile DTO
+                if (user instanceof FreelancerModel) {
+                        FreelancerModel freelancer = (FreelancerModel) user;
+                        profileDto = freelancerDtoFactory.toProfileDto(freelancer);
+                        message = "Freelancer profile retrieved successfully";
+                } else if (user instanceof EmployerModel) {
+                        EmployerModel employer = (EmployerModel) user;
+                        profileDto = employerDtoFactory.toProfileDto(employer);
+                        message = "Employer profile retrieved successfully";
+                } else {
+                        // Fallback for base UserModel (if needed)
+                        profileDto = new UserProfileDto(user.getUserName(), user.getFirstName(), user.getLastName());
+                        message = "User profile retrieved successfully";
+                }
+
+                return ResponseEntity.ok(MyApiResponse.success(profileDto, message));
         }
 
         @Operation(summary = "Change password", description = "Change the current user's password. Requires authentication.")

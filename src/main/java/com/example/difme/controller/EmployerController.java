@@ -67,7 +67,7 @@ public class EmployerController {
         return ResponseEntity.ok(MyApiResponse.success(responseDto, "Employer retrieved successfully"));
     }
 
-    @PreAuthorize("#id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update employer", description = "Update an existing employer's profile")
     @ApiResponse(responseCode = "200", description = "Employer updated successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
@@ -86,7 +86,7 @@ public class EmployerController {
         return ResponseEntity.ok(MyApiResponse.success(responseDto, "Employer updated successfully"));
     }
 
-    @PreAuthorize("#id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete employer", description = "Delete an employer from the system")
     @ApiResponse(responseCode = "200", description = "Employer deleted successfully")

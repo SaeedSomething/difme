@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.difme.dto.employer.EmployerCreateRequestDto;
+import com.example.difme.dto.employer.EmployerProfileDto;
 import com.example.difme.dto.employer.EmployerResponseDto;
 import com.example.difme.dto.employer.EmployerUpdateRequestDto;
 import com.example.difme.model.EmployerModel;
@@ -56,6 +57,17 @@ public class EmployerDtoFactory {
                 model.getLastName(),
                 model.getEmail(),
                 model.getPhoneNumber(),
+                model.getCompanyDescription());
+    }
+
+    public EmployerProfileDto toProfileDto(EmployerModel model) {
+        if (model == null)
+            return null;
+
+        return new EmployerProfileDto(
+                model.getUserName(),
+                model.getFirstName(),
+                model.getLastName(),
                 model.getCompanyDescription());
     }
 

@@ -79,7 +79,7 @@ public class FreelancerController {
         return ResponseEntity.ok(MyApiResponse.success(responseDto, "Freelancer retrieved successfully"));
     }
 
-    @PreAuthorize("#id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update freelancer", description = "Update an existing freelancer's profile")
     @ApiResponse(responseCode = "200", description = "Freelancer updated successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
@@ -98,7 +98,7 @@ public class FreelancerController {
         return ResponseEntity.ok(MyApiResponse.success(responseDto, "Freelancer updated successfully"));
     }
 
-    @PreAuthorize("#id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @PutMapping("/{id}/skills")
     @Operation(summary = "Update freelancer skills", description = "Update the skills associated with a freelancer")
     @ApiResponse(responseCode = "200", description = "Skills updated successfully", content = @Content(schema = @Schema(implementation = MyApiResponse.class)))
@@ -113,7 +113,7 @@ public class FreelancerController {
         return ResponseEntity.ok(MyApiResponse.success(responseDto, "Skills updated successfully"));
     }
 
-    @PreAuthorize("#id==authentication.principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id==@authenticationContext.getCurrentUser().getId() or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete freelancer", description = "Delete a freelancer from the system")
     @ApiResponse(responseCode = "200", description = "Freelancer deleted successfully")

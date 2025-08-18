@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.example.difme.dto.employer.EmployerProfileDto;
 import com.example.difme.dto.freelancer.FreelancerCreateRequestDto;
+import com.example.difme.dto.freelancer.FreelancerProfileDto;
 import com.example.difme.dto.freelancer.FreelancerResponseDto;
 import com.example.difme.dto.freelancer.FreelancerUpdateRequestDto;
 import com.example.difme.dto.skill.SkillResponseDto;
+import com.example.difme.model.EmployerModel;
 import com.example.difme.model.FreelancerModel;
 import com.example.difme.model.SkillModel;
 import com.example.difme.model.enums.Role;
@@ -52,6 +55,18 @@ public class FreelancerDtoFactory {
         freelancer.setPhoneNumber(dto.getPhoneNumber());
         freelancer.setRole(Role.FREELANCER);
         return freelancer;
+    }
+
+    public FreelancerProfileDto toProfileDto(FreelancerModel model) {
+        if (model == null)
+            return null;
+
+        return new FreelancerProfileDto(
+                model.getUserName(),
+                model.getFirstName(),
+                model.getLastName(),
+                model.getSkills().stream().map(skill -> skill.getSkillName() + " " + skill.getSkillLevel())
+                        .collect(Collectors.toList()));
     }
 
     /**
@@ -94,7 +109,9 @@ public class FreelancerDtoFactory {
         if (dto.getPhoneNumber() != null) {
             model.setPhoneNumber(dto.getPhoneNumber());
         }
-
+        if (dto.getEmail() != null) {
+            model.setEmail(dto.getEmail());
+        }
         // Handle skills update if provided
         if (dto.getSkillIds() != null) {
             Set<SkillModel> skills = dto.getSkillIds().stream()
